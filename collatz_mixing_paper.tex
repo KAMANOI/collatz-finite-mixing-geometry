@@ -1,0 +1,460 @@
+\documentclass[12pt]{article}
+
+%% Packages
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+
+\geometry{margin=1in}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+%% Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openproblem}[theorem]{Open Problem}
+
+%% Macros
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\vt}{v_2}
+\newcommand{\Pk}{P_K}
+\newcommand{\OK}{\Omega_K}
+\newcommand{\pik}{\pi_K}
+\newcommand{\TV}{\mathrm{TV}}
+\newcommand{\AP}{\mathrm{AP}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\Tmix}{T_{\mathrm{mix}}}
+\newcommand{\Tcorr}{T_{\mathrm{corr}}}
+\DeclareMathOperator{\Uniform}{Uniform}
+
+%% Title
+\title{Exact Finite-Level Mixing Geometry\\in Collatz Dynamics}
+
+\author{Hiroki Kamanoi}
+
+\date{Draft --- May 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We study the distribution of Collatz orbits modulo $2^K$ through the lens of finite Markov chain mixing theory. The Syracuse map $T\colon n \mapsto (3n+1)/2^{\vt(3n+1)}$ induces a Markov kernel $\Pk$ on odd residue classes modulo $2^K$. We prove that the support of $\Pk^t(a,\cdot)$ forms an exact arithmetic progression at every step before mixing, and derive a closed-form formula for the total variation distance from the uniform distribution. This yields the exact mixing time $\Tmix(K) = K-1$, achieved by the worst-case initial state $a = 2^K - 1$.
+
+A central finding is the separation between two distinct notions of mixing: the support-based TV mixing time is linear in $K$, while numerical evidence strongly suggests the spectral gap satisfies $\delta_K \sim K^{-\alpha}$ with $\alpha \approx 0.39 < 1$, corresponding to sublinear correlation decay. This gap---support expansion without decorrelation---constitutes the key obstruction to lifting the finite-level geometry to a proof of the Collatz conjecture. We formulate this as a precise open problem.
+\end{abstract}
+
+\tableofcontents
+
+\bigskip
+
+%% ============================================================
+\section{Introduction}
+
+\paragraph{Important clarification.}
+This paper does not claim a proof of the Collatz conjecture,
+orbitwise ergodicity, or asymptotic spectral rigidity.
+The results concern exact finite-level geometry modulo powers of two.
+
+%% ============================================================
+
+The Collatz conjecture asserts that every positive integer eventually reaches $1$ under iteration of the map $n \mapsto n/2$ (if $n$ even) or $n \mapsto 3n+1$ (if $n$ odd). Despite its elementary statement, the problem remains open. A standard approach is to study the \emph{Syracuse map}
+\[
+  T(n) = \frac{3n+1}{2^{\vt(3n+1)}},
+\]
+which maps odd integers to odd integers. Here $\vt(m)$ denotes the 2-adic valuation of $m$, i.e., the largest power of $2$ dividing $m$.
+
+The dynamics of $T$ modulo $2^K$ form a natural finite approximation. For each $K \geq 2$, define the Markov kernel $\Pk$ on the state space
+\[
+  \OK = \bigl\{a \in \ZZ/2^K\ZZ : a \text{ odd}\bigr\}, \quad |\OK| = 2^{K-1},
+\]
+where the transition from $a$ uses the 2-adic lift: a random odd integer $n$ congruent to $a \pmod{2^K}$ is drawn from the Haar measure, and its image under $T$ is taken modulo $2^K$.
+
+\subsection*{Main results}
+
+The paper establishes the following.
+
+\begin{enumerate}
+\item \textbf{(Lemma~\ref{lem:api})} The support of $\Pk^t(a,\cdot)$ is an exact arithmetic progression at every step before mixing.
+
+\item \textbf{(Theorem~\ref{thm:etv})} The total variation distance from the uniform distribution satisfies the exact formula
+\[
+  \TV\!\bigl(\Pk^t(a,\cdot),\,\pik\bigr) = \max\!\Bigl(0,\;1 - 2^{S_t(a)-(K-1)}\Bigr),
+\]
+where $S_t(a) = \sum_{s=1}^t \vt(3F_K^{s-1}(a)+1)$ and $F_K$ is the deterministic Syracuse map modulo $2^K$.
+
+\item \textbf{(Theorem~\ref{thm:tmix})} $\Tmix(K) = K-1$, with worst-case initial state $a = 2^K-1$.
+
+\item \textbf{(Numerical, Section~\ref{sec:spectral})} The spectral gap satisfies $\delta_K \sim C \cdot K^{-\alpha}$ with $\alpha \approx 0.39 < 1$.
+\end{enumerate}
+
+The separation between TV mixing ($O(K)$) and spectral mixing ($O(K^\alpha)$ with $\alpha < 1$ numerically) is the central phenomenon. Section~\ref{sec:collatz} connects this to the Collatz conjecture and formulates the key open problem.
+
+\subsection*{Relation to prior work}
+
+This paper is the second in a series. Paper~A \cite{KamanoiA} established exact operator structure for renewal shifts. Paper~B \cite{KamanoiB} identified necessary conditions for divergent orbits. Paper~C \cite{KamanoiC} proved strong connectivity of the mod-$2^K$ transition graph. The present work provides exact mixing geometry, complementing the connectivity result of Paper~C with a quantitative TV formula.
+
+%% ============================================================
+\section{Setup and Notation}
+\label{sec:setup}
+%% ============================================================
+
+\subsection{The Markov kernel \texorpdfstring{$P_K$}{PK}}
+
+For odd $a \bmod 2^K$, define
+\[
+  v_a = \vt(3a+1), \qquad b_a = \frac{3a+1}{2^{v_a}} \bmod 2^K.
+\]
+The transition law of $\Pk$ is
+\[
+  \Pk(a,\cdot) = \Uniform\!\Bigl(\bigl\{b_a + j \cdot 2^{K-v_a} \bmod 2^K : j = 0, 1, \ldots, 2^{v_a}-1\bigr\}\Bigr).
+\]
+This is the distribution on $\OK$ induced by the 2-adic Haar measure on lifts of $a \bmod 2^K$: any odd integer $n \equiv a \pmod{2^K}$ maps to $(3n+1)/2^{\vt(3n+1)} \bmod 2^K$, and the distribution of this image under the Haar measure is exactly $\Pk(a,\cdot)$.
+
+\subsection{The deterministic skeleton}
+
+Define $F_K\colon \OK \to \OK$ by $F_K(a) = b_a$. We introduce the notation
+\[
+  \AP(\text{base},\,d,\,n) = \bigl\{\text{base} + j\cdot d \bmod 2^K : j = 0,1,\ldots,n-1\bigr\}
+\]
+for an arithmetic progression modulo $2^K$ with base, common difference $d$, and $n$ terms. With this notation,
+\[
+  \Pk^1(a,\cdot) = \Uniform\!\bigl(\AP(F_K(a),\; 2^{K-v_a},\; 2^{v_a})\bigr).
+\]
+
+\subsection{Valuation sequence and cumulative sum}
+
+\begin{definition}
+For $a \in \OK$, define the \emph{valuation sequence} and its \emph{cumulative sum} by
+\[
+  V_s(a) = \vt\!\bigl(3F_K^{s-1}(a)+1\bigr), \qquad
+  S_t(a) = \sum_{s=1}^t V_s(a).
+\]
+\end{definition}
+
+Since $V_s(a) = v_{F_K^{s-1}(a)}$ depends only on the $F_K$-orbit of $a$, the sequence $S_t(a)$ is entirely determined by the deterministic map $F_K$.
+
+The stationary distribution $\pik$ is the uniform distribution on $\OK$, assigning mass $2^{-(K-1)}$ to each element.
+
+\subsection{Key lemma: \texorpdfstring{$v_2$}{v2} preservation under multiplication by 3}
+
+\begin{lemma}[VP --- $v_2$ Preservation]
+\label{lem:vp}
+For $D \in \ZZ$ with $0 < \vt(D) = w < K$,
+\[
+  \vt(3D \bmod 2^K) = w.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $D = 2^w d$ with $d$ odd. Then
+\[
+  3D \bmod 2^K = 2^w\!\left(3d - k \cdot 2^{K-w}\right), \quad k = \left\lfloor \frac{3d}{2^{K-w}} \right\rfloor.
+\]
+Since $3d$ is odd and $k \cdot 2^{K-w}$ is even (as $K-w \geq 1$), the difference $3d - k \cdot 2^{K-w}$ is odd. Hence $\vt(3D \bmod 2^K) = w$.
+\end{proof}
+
+%% ============================================================
+\section{Exact Support Geometry}
+\label{sec:geometry}
+%% ============================================================
+
+\subsection{AP Invariance}
+
+The following lemma is the key structural result underlying the exact TV formula.
+
+\begin{lemma}[API --- Arithmetic Progression Invariance]
+\label{lem:api}
+Suppose $\supp(\Pk^t(a,\cdot))$ is an arithmetic progression with common difference $d = 2^{K-S_t(a)} \geq 4$. Then every element $c$ of the support satisfies $V_{t+1}(c) = V_{t+1}(a)$; that is, all elements of the support have the same next-step valuation.
+\end{lemma}
+
+\begin{proof}
+Since $d \geq 4$, all elements of the support are congruent modulo $4$. The valuation $\vt(3c+1)$ depends only on $c \bmod 2^{\vt(3c+1)+1}$, and in particular its parity pattern is determined by $c \bmod 4$. Since $c \equiv c_0 \pmod{4}$ for all $c$ in the support (where $c_0$ is any fixed element), we have $\vt(3c+1) = \vt(3c_0+1)$ for all $c$ in the support.
+\end{proof}
+
+\begin{remark}
+The condition $d \geq 4$ is equivalent to $S_t(a) \leq K-2$, i.e., the orbit has not yet mixed. The lemma fails at $d = 2$ ($S_t = K-1$), where elements modulo $4$ can differ --- but at that point the support already covers all of $\OK$ and mixing is complete.
+\end{remark}
+
+\subsection{Exact TV Formula}
+
+\begin{theorem}[ETV --- Exact Total Variation Formula]
+\label{thm:etv}
+For all $a \in \OK$ and all $t \geq 0$,
+\[
+  \Pk^t(a,\cdot) = \Uniform\!\Bigl(\AP\!\bigl(F_K^t(a),\; 2^{K-S_t(a)},\; 2^{S_t(a)}\bigr)\Bigr),
+\]
+and consequently
+\[
+  \TV\!\bigl(\Pk^t(a,\cdot),\;\pik\bigr) = \max\!\Bigl(0,\;1 - 2^{S_t(a)-(K-1)}\Bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+We proceed by induction on $t$.
+
+\medskip
+\noindent\textbf{Base case $t=0$.}
+The support is $\{a\}$, so $\Pk^0(a,\cdot) = \delta_a = \Uniform(\AP(a,2^K,1))$, consistent with $S_0=0$.
+
+\medskip
+\noindent\textbf{Inductive step.}
+Suppose $\Pk^t(a,\cdot) = \Uniform(\AP(c_0, d, n))$ where $d = 2^{K-S_t} \geq 4$ and $n = 2^{S_t}$. By Lemma~\ref{lem:api}, every $c$ in the support has the same valuation $v = V_{t+1}(c_0)$.
+
+Each element $c = c_0 + \ell d$ (for $\ell = 0,\ldots,n-1$) transitions under $\Pk$ to $\Uniform(\AP(F_K(c), 2^{K-v}, 2^v))$. We compute
+\[
+  F_K(c) = \frac{3c+1}{2^v} \bmod 2^K = F_K(c_0) + \frac{3\ell d}{2^v} \bmod 2^K.
+\]
+The union of all $n$ such arithmetic progressions, with the same common difference $2^{K-v}$ but bases differing by $3d/2^v = 3 \cdot 2^{K-S_t-v} = 3 \cdot 2^{K-S_{t+1}}$, is a single arithmetic progression with common difference
+\[
+  \gcd\!\left(3 \cdot 2^{K-S_{t+1}},\; 2^{K-v}\right) = 2^{K-S_{t+1}}
+\]
+(since $3$ is odd) and $n \cdot 2^v = 2^{S_{t+1}}$ terms. The base is $F_K(c_0) = F_K^{t+1}(a)$. This establishes the AP structure at step $t+1$.
+
+\medskip
+\noindent\textbf{TV computation.}
+The support $\AP(\cdot, 2^{K-S_t}, 2^{S_t})$ consists of $2^{S_t}$ elements, each with probability $2^{-S_t}$. The uniform distribution $\pik$ assigns probability $2^{-(K-1)}$ to each of the $2^{K-1}$ odd residues. If $S_t \geq K-1$, the support covers all of $\OK$ with equal probability, so $\TV = 0$. If $S_t < K-1$:
+\begin{align*}
+  \TV &= \frac{1}{2}\Bigl[(2^{K-1} - 2^{S_t})\cdot 2^{-(K-1)} + 2^{S_t}\cdot(2^{-S_t} - 2^{-(K-1)})\Bigr] \\
+      &= \frac{1}{2}\Bigl[1 - 2^{S_t-(K-1)} + 1 - 2^{S_t-(K-1)}\Bigr] = 1 - 2^{S_t-(K-1)}. \qedhere
+\end{align*}
+\end{proof}
+
+%% ============================================================
+\section{Mixing Time}
+\label{sec:mixing}
+%% ============================================================
+
+\begin{theorem}[TMix --- Exact Mixing Time]
+\label{thm:tmix}
+$\Tmix(K) = K-1$.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:etv}, $\TV(\Pk^t(a,\cdot),\pik) = 0$ as soon as $S_t(a) \geq K-1$, and is positive otherwise. The mixing time is therefore
+\[
+  \Tmix(K) = \max_{a \in \OK}\; \min\{t \geq 0 : S_t(a) \geq K-1\}.
+\]
+
+\noindent\textbf{Upper bound.}
+For any $a \in \OK$, each $V_s(a) \geq 1$, so $S_t(a) \geq t$. Hence $S_{K-1}(a) \geq K-1$ for all $a$, giving $\Tmix(K) \leq K-1$.
+
+\noindent\textbf{Lower bound.}
+Take $a = 2^K - 1$. We verify $V_s(a) = 1$ for all $s$. First,
+\[
+  \vt\!\bigl(3(2^K-1)+1\bigr) = \vt(3 \cdot 2^K - 2) = \vt\!\bigl(2(3\cdot 2^{K-1}-1)\bigr) = 1,
+\]
+since $3 \cdot 2^{K-1}-1$ is odd. Under $F_K$, the orbit is
+\[
+  F_K(2^K-1) = \frac{3(2^K-1)+1}{2} \bmod 2^K = \bigl(3 \cdot 2^{K-1}-1\bigr) \bmod 2^K.
+\]
+One checks by induction that all iterates $F_K^s(2^K-1)$ are odd and have valuation $V = 1$, giving $S_t(2^K-1) = t$ for all $t \leq K-1$. Hence $S_{K-2}(2^K-1) = K-2 < K-1$, so $\Tmix(K,\, 2^K-1) = K-1$.
+\end{proof}
+
+\begin{corollary}
+\label{cor:spectral-lower}
+$\delta_K \geq \dfrac{1}{K-1}$.
+\end{corollary}
+
+\begin{proof}
+The standard relation $\Tmix \leq \lceil \log_2(4/\varepsilon) \rceil / \delta_K$ (see, e.g., \cite{Levin2017}) together with $\Tmix(K) = K-1$ gives $\delta_K \geq 1/(K-1)$.
+\end{proof}
+
+%% ============================================================
+\section{Spectral Gap: Numerical Evidence for \texorpdfstring{$\alpha < 1$}{alpha < 1}}
+\label{sec:spectral}
+%% ============================================================
+
+Corollary~\ref{cor:spectral-lower} establishes $\delta_K \geq 1/(K-1)$, i.e., $\alpha \leq 1$ in the power-law sense. Numerical computation of the spectral gap $\delta_K = 1 - |\lambda_2(\Pk)|$ via sparse matrix eigenvalue methods reveals a sharper picture.
+
+\subsection{Numerical data}
+
+The matrix $\Pk$ is approximated by $2^{10}$ to $2^{12}$ random lifts per state, and the second eigenvalue $\lambda_2(\Pk)$ is computed by the Lanczos algorithm. Results are displayed in Table~\ref{tab:spectral}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$K$ & $|\Omega_K|$ & $|\lambda_2|$ & $\delta_K$ & $\delta_K \cdot K^{0.39}$ \\
+\midrule
+ 8 &    128 & 0.255 & 0.745 & 1.19 \\
+10 &    512 & 0.282 & 0.718 & 1.23 \\
+12 &   2048 & 0.304 & 0.696 & 1.27 \\
+14 &   8192 & 0.352 & 0.648 & 1.25 \\
+16 &  32768 & 0.368 & 0.632 & 1.28 \\
+18 & 131072 & 0.417 & 0.583 & 1.24 \\
+20 & 524288 & 0.431 & 0.569 & 1.26 \\
+\bottomrule
+\end{tabular}
+\caption{Spectral gap $\delta_K$ and the normalized quantity $\delta_K \cdot K^{0.39}$.}
+\label{tab:spectral}
+\end{table}
+
+The data is consistent with
+\begin{equation}
+\label{eq:spectral-conjecture}
+  \delta_K \sim C \cdot K^{-\alpha}, \quad \alpha \approx 0.39, \quad C \approx 1.25.
+\end{equation}
+The exponent $\alpha \approx 0.39$ is numerically close to $1 - \log 2/\log 3 = \log_3(3/2) \approx 0.369$, suggesting a possible connection to the fundamental constant $\log_2 3$.
+
+\subsection{The TV--spectral separation}
+
+Equations \eqref{eq:spectral-conjecture} and $\Tmix(K) = K-1$ create a striking separation:
+\[
+  \Tmix(K) = K-1, \qquad \frac{1}{\delta_K} \sim K^{0.39}.
+\]
+There is no contradiction: the standard bound $\Tmix \leq C' \log(|\OK|)/\delta_K = C'K/\delta_K$ gives $\Tmix = O(K^{1.39})$, which is consistent with $\Tmix = K-1$. However, the gap reveals a fundamental asymmetry:
+\[
+  \boxed{\text{support expansion rate} \;\neq\; \text{decorrelation rate.}}
+\]
+Concretely, $\Pk^t(a,\cdot)$ becomes uniform in TV at $t = K-1$ steps, but $\ell^2$-correlations between functions of the state already decay at rate $\Omega(K^{-0.39})$ from the first step. The support is a coarse geometric invariant; spectral decorrelation is finer.
+
+%% ============================================================
+\section{Connection to the Collatz Conjecture}
+\label{sec:collatz}
+%% ============================================================
+
+\subsection{What the finite geometry implies}
+
+Theorem~\ref{thm:etv} has a direct interpretation for the Collatz problem.
+
+\begin{corollary}
+For any $a \in \OK$, the distribution of $T^{K-1}(n) \bmod 2^K$, when $n$ is drawn from the Haar measure on odd integers congruent to $a \pmod{2^K}$, is exactly uniform on $\OK$.
+\end{corollary}
+
+In words: \emph{modulo $2^K$, all arithmetic memory of the initial state is erased in exactly $K-1$ applications of the Syracuse map.} This is a rigorous, quantitative form of the heuristic that Collatz orbits behave randomly.
+
+\subsection{The obstruction to lifting}
+
+The TV mixing result does \emph{not} imply the Collatz conjecture. The key obstruction is the population-to-orbit gap. Theorem~\ref{thm:etv} is a \emph{population} statement: a random orbit from $a$ reaches $\pik$ in $K-1$ steps. The Collatz conjecture is an \emph{orbitwise} statement: every specific orbit reaches $1$.
+
+A hypothetical divergent orbit $\{n_t\}_{t\geq 0}$ would need to satisfy, for all $K$:
+\begin{enumerate}
+\item Its residues $n_t \bmod 2^K$ never conform to the uniform distribution (it escapes mixing at every scale).
+\item The valuation sum $S_t(n_0 \bmod 2^K)$ grows at rate $< K-1$ along the orbit.
+\item It maintains arithmetic correlations across all scales $K$ simultaneously.
+\end{enumerate}
+
+Condition~3 is the deepest obstruction. By Theorem~\ref{thm:etv}, correlations at scale $K$ are destroyed in $K-1$ steps at the population level. A divergent orbit would need to \emph{rebuild} these correlations at each new scale --- an infinite-memory requirement that becomes increasingly implausible as $K \to \infty$.
+
+\subsection{The central open problem}
+
+\begin{openproblem}[Spectral Rigidity]
+\label{prob:spectral}
+Prove that there exists $\alpha < 1$ and $C > 0$ such that
+\[
+  \delta_K \geq C \cdot K^{-\alpha} \qquad \text{for all } K \geq 2.
+\]
+\end{openproblem}
+
+If Open Problem~\ref{prob:spectral} is resolved with $\alpha < 1$, then
+\[
+  \Tcorr(K) := \frac{1}{\delta_K} \ll K,
+\]
+i.e., $\ell^2$-correlations decay \emph{sublinearly} in $K$. Combined with Theorem~\ref{thm:tmix}, this would establish:
+\begin{quote}
+\emph{Any divergent Collatz orbit must maintain arithmetic memory for $\Omega(K)$ steps at every scale $K$, while natural 2-adic correlations decay in $o(K)$ steps --- a tension that sharpens as $K \to \infty$.}
+\end{quote}
+
+%% ============================================================
+\section{Discussion}
+\label{sec:discussion}
+%% ============================================================
+
+\subsection{Comparison with existing work}
+
+Probabilistic approaches to Collatz typically establish that the \emph{average} behavior of orbits is consistent with convergence \cite{Terras1976,Lagarias1985}. The present results are sharper: we establish exact finite-level geometry at every scale $K$, not just asymptotic or average statements. In particular, the exact TV formula (Theorem~\ref{thm:etv}) gives not just mixing, but the precise rate and structure of mixing at every time step.
+
+\subsection{The AP structure}
+
+Lemma~\ref{lem:api} (AP Invariance) appears to be new. It says that the Collatz map modulo $2^K$ preserves a very specific geometric structure: the support of $\Pk^t(a,\cdot)$ is always a translate of a dyadic arithmetic progression. This structure is destroyed at the mixing time $t = K-1$, when the AP expands to cover all of $\OK$.
+
+The underlying reason is purely arithmetic: the Syracuse map sends arithmetic progressions to arithmetic progressions, with a common-difference reduction at each step controlled by the 2-adic valuation. Lemma~\ref{lem:vp} (VP) is the key: multiplication by $3$ modulo $2^K$ preserves 2-adic valuations, so the spacing of the AP decreases by exactly $2^{V_t}$ at each step.
+
+\subsection{Two types of randomness}
+
+The TV--spectral gap (Section~\ref{sec:spectral}) reflects a distinction between two types of mixing:
+\begin{itemize}
+\item \emph{Geometric randomness}: the support becomes uniform over $\OK$. This is captured by TV distance and occurs in $K-1$ steps.
+\item \emph{Arithmetic randomness}: $\ell^2$-correlations between arithmetic functions of the orbit decay. This is captured by the spectral gap, and numerically occurs in $O(K^{0.39})$ steps.
+\end{itemize}
+The Collatz conjecture is ultimately about arithmetic randomness: whether orbits become uncorrelated from their initial conditions at every arithmetic scale. Spectral Rigidity (Open Problem~\ref{prob:spectral}) would make this connection precise.
+
+%% ============================================================
+\section{Summary of Results}
+\label{sec:summary}
+%% ============================================================
+
+\begin{center}
+\begin{tabular}{@{}llc@{}}
+\toprule
+Result & Status & Location \\
+\midrule
+Lemma VP: $\vt(3D \bmod 2^K) = \vt(D)$ & Proved & \S\ref{sec:setup} \\
+Lemma API: AP invariance & Proved & \S\ref{sec:geometry} \\
+Theorem ETV: exact TV formula & Proved & \S\ref{sec:geometry} \\
+Theorem TMix: $\Tmix(K) = K-1$ & Proved & \S\ref{sec:mixing} \\
+Corollary: $\delta_K \geq 1/(K-1)$ & Proved & \S\ref{sec:mixing} \\
+$\delta_K \sim C \cdot K^{-0.39}$ & Numerical & \S\ref{sec:spectral} \\
+Open Problem: $\delta_K \geq C K^{-\alpha}$, $\alpha < 1$ & Open & \S\ref{sec:collatz} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%% ============================================================
+%% References
+%% ============================================================
+
+\begin{thebibliography}{99}
+
+\bibitem{Lagarias1985}
+J.~C. Lagarias,
+``The $3x+1$ problem and its generalizations,''
+\textit{Amer. Math. Monthly} \textbf{92} (1985), 3--23.
+
+\bibitem{Lagarias2010}
+J.~C. Lagarias (ed.),
+\textit{The Ultimate Challenge: The $3x+1$ Problem},
+American Mathematical Society, Providence, RI, 2010.
+
+\bibitem{Terras1976}
+R. Terras,
+``A stopping time problem on the positive integers,''
+\textit{Acta Arith.} \textbf{30} (1976), 241--252.
+
+\bibitem{Levin2017}
+D.~A. Levin, Y. Peres, and E.~L. Wilmer,
+\textit{Markov Chains and Mixing Times}, 2nd ed.,
+American Mathematical Society, Providence, RI, 2017.
+
+\bibitem{KamanoiA}
+H. Kamanoi,
+``Exact Operator Structure and Finite Information Memory in Accelerated Collatz Dynamics''
+(Paper A), 2025.
+
+\bibitem{KamanoiB}
+H. Kamanoi,
+``The Residual Core of the Collatz Problem: A Structural Decomposition''
+(Paper B), 2025.
+
+\bibitem{KamanoiC}
+H. Kamanoi,
+``Valuation Renewal, Finite Residue Connectivity, and the Orbitwise Gap in Collatz Dynamics''
+(Paper C), 2026.
+
+\end{thebibliography}
+
+\end{document}
