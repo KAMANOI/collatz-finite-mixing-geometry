@@ -1,81 +1,65 @@
-# REVIEW NOTES
+# Review Notes
 
-## Critical Mathematical Correction
+## Review-Safety Revisions Included
 
-The original draft contained the statement:
+This version includes several changes intended to improve mathematical and referee robustness.
 
-> "v_2(3c+1) depends only on c mod 4"
+### 1. AP invariance corrected
 
-This is false.
+The earlier dangerous statement that `v_2(3c+1)` is determined by `c mod 4` has been removed.
 
-The correct statement is:
+The corrected local statement is:
 
-If
+```text
+If c ≡ c_0 mod 2^{v+1}, where v=v_2(3c_0+1), then v_2(3c+1)=v.
+```
 
-c ≡ c_0 mod 2^{v+1}
+This is the correct mechanism behind arithmetic-progression invariance.
 
-where
+### 2. Finite valuation tail handled
 
-v = v_2(3c_0 + 1),
+At finite level `K`, valuation levels `v >= K` must be aggregated into a tail branch.
 
-then
+The dual representation is therefore normalized as:
 
-v_2(3c+1)=v.
+```text
+sum_{v=1}^{K-1} 2^{-v} f(T_K^{-v}(b))
++ 2^{-(K-1)} f(T_K^{- >= K}(b)).
+```
 
-This is the actual mechanism underlying the AP invariance lemma.
+This avoids the incorrect finite sum `sum_{v=1}^K 2^{-v}`, which does not have the correct stochastic interpretation.
 
----
+### 3. Spectral claims weakened
 
-## Interpretation
+The exponent near `0.39` is described only as numerical evidence.
 
-This work establishes:
+The paper no longer presents this exponent as theoretically established.
 
-- exact finite-level support geometry,
-- exact TV mixing,
-- exact mixing time modulo powers of two.
+### 4. Collatz-conjecture claims restricted
 
-It does NOT establish:
+The paper explicitly says that it does not prove the Collatz conjecture.
 
-- orbitwise convergence,
-- ergodicity of individual trajectories,
-- a proof of the Collatz conjecture.
+The remaining obstruction is stated as the population-to-orbit gap.
 
----
+## Remaining Open Problems
 
-## Numerical Claims
+- sharp spectral or singular-value estimates for `P_K`;
+- spectral theory of the limiting 2-adic transfer operator;
+- orbitwise arithmetic decorrelation;
+- any rigorous bridge from finite-level population mixing to individual Collatz trajectories.
 
-The observed scaling:
+## Recommended Repository Positioning
 
-δ_K ~ K^{-0.39}
+Use:
 
-is numerical only.
+```text
+Exact finite-level mixing geometry in accelerated Collatz dynamics.
+```
 
-The paper should state:
+Avoid:
 
-"Numerical experiments are consistent with a power-law scaling."
-
-rather than presenting the exponent as a theorem.
-
----
-
-## Main Open Problem
-
-The central unresolved issue is:
-
-population mixing
-≠
-orbitwise decorrelation.
-
-A divergent orbit, if it exists, would need to maintain coherent arithmetic
-correlations across infinitely many scales simultaneously.
-
----
-
-## Recommended Future Directions
-
-- transfer operators,
-- symbolic renewal systems,
-- spectral analysis modulo 2^K,
-- 2-adic harmonic analysis,
-- arithmetic decorrelation,
-- orbitwise lifting mechanisms.
+```text
+Proof of Collatz
+Complete resolution
+Collatz solved
+```

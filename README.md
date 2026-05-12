@@ -3,108 +3,65 @@
 **Hiroki Kamanoi**  
 Draft — May 2026
 
-## Overview
+This repository contains a research draft on exact finite-level mixing geometry for the accelerated Collatz/Syracuse map modulo powers of two.
 
-This repository studies finite-level mixing properties of the accelerated Collatz
-(Syracuse) map modulo powers of two.
+The paper studies the Markov kernel induced on odd residue classes modulo `2^K` by Haar-random 2-adic lifts.
 
-The main result is an exact description of the support geometry of the induced
-Markov kernel on odd residue classes modulo `2^K`.
+## Main Results
 
 The paper proves:
 
-- exact arithmetic progression support geometry,
-- an exact total variation formula,
-- exact mixing time:
-
-  `T_mix(K) = K - 1`
-
-- and a separation between:
-  - support-based TV mixing,
-  - spectral/correlation mixing.
-
-This repository does **not** claim a proof of the Collatz conjecture.
-
-Instead, the paper isolates a precise obstruction:
-
-> finite-level mixing is exact, but orbitwise lifting remains open.
-
----
-
-## Main Result
-
-For every `K ≥ 2`, every odd residue class `a mod 2^K`,
-and every `t < K`,
-
-the support of
-
-`P_K^t(a, ·)`
-
-is exactly a dyadic arithmetic progression with:
-
-- spacing:
-
-  `2^{K-S_t(a)}`
-
-- cardinality:
-
-  `2^{S_t(a)}`
-
-where
-
-`S_t(a)=Σ_{s≤t} v_2(3F_K^{s-1}(a)+1)`.
-
-Mixing occurs precisely when the progression fills all odd residue classes.
-
----
-
-## Main Themes
-
-The paper distinguishes two different notions of randomness:
-
-1. Geometric support mixing
-2. Arithmetic decorrelation
-
-The key phenomenon is:
-
-support expansion ≠ decorrelation.
-
----
+- exact dyadic arithmetic-progression support geometry;
+- an exact total variation formula;
+- exact support-mixing time `T_mix(K)=K-1`;
+- a normalized finite inverse-tree dual representation with a valuation-tail branch;
+- a precise formulation of the remaining population-to-orbit obstruction.
 
 ## Important Clarification
 
-The repository does NOT claim:
+This repository does **not** claim a proof of the Collatz conjecture.
 
-- a proof of the Collatz conjecture,
-- orbitwise ergodicity,
-- asymptotic spectral rigidity,
-- convergence of all trajectories.
+It also does not claim:
 
-The results concern exact finite-level geometry modulo powers of two.
+- orbitwise ergodicity;
+- convergence of all Collatz trajectories;
+- a proved asymptotic spectral exponent;
+- a proof of spectral rigidity.
 
----
+The rigorous contribution is finite-level and population-level.
 
-## Repository Contents
+## Central Theme
 
-- `collatz_mixing_paper.tex`
-- `collatz_mixing_paper.pdf`
-- `README.md`
-- `REVIEW_NOTES.md`
-- `LICENSE`
+The main distinction isolated in the paper is:
 
----
+```text
+support expansion != arithmetic decorrelation
+```
 
-## arXiv Categories
+The finite support geometry mixes exactly in total variation after `K-1` steps, but this does not automatically imply orbitwise decorrelation for a fixed positive integer trajectory.
+
+## Numerical Component
+
+The numerical spectral data are presented only as evidence. The apparent exponent near `0.39` is not claimed as a theorem.
+
+## Files
+
+- `collatz_mixing_paper.tex` — LaTeX source
+- `collatz_mixing_paper.pdf` — compiled draft
+- `REVIEW_NOTES.md` — mathematical and presentation notes
+- `LICENSE` — MIT license
+
+## Suggested arXiv Categories
 
 Primary:
-- math.DS
+
+- `math.DS`
 
 Secondary:
-- math.NT
-- math.PR
 
----
+- `math.NT`
+- `math.PR`
 
-## License
+## Status
 
-MIT License
+Research draft. Feedback welcome.
