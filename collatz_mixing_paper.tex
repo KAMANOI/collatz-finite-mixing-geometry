@@ -1,451 +1,257 @@
 
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 
-\usepackage{amsmath,amssymb,amsthm,mathtools}
-\usepackage{geometry,booktabs,array,hyperref}
-\geometry{margin=1in}
-\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
 
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{proposition}[theorem]{Proposition}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{openproblem}[theorem]{Open Problem}
-
-\newcommand{\ZZ}{\mathbb{Z}}
-\newcommand{\Ztwo}{\mathbb{Z}_2}
-\newcommand{\vt}{v_2}
-\newcommand{\OK}{\Omega_K}
-\newcommand{\Pk}{P_K}
-\newcommand{\Lk}{\mathcal{L}_K}
-\newcommand{\pik}{\pi_K}
-\newcommand{\TV}{\mathrm{TV}}
-\newcommand{\AP}{\mathrm{AP}}
-\newcommand{\supp}{\mathrm{supp}}
-\newcommand{\Tmix}{T_{\mathrm{mix}}}
-\DeclareMathOperator{\Uniform}{Uniform}
-
-\title{Exact Finite-Level Mixing Geometry\\in Collatz Dynamics}
+\title{Exact Finite-Level Mixing Geometry\\
+in Accelerated Collatz Dynamics}
 \author{Hiroki Kamanoi}
-\date{Draft --- May 2026}
+\date{May 2026}
 
 \begin{document}
+
 \maketitle
 
 \begin{abstract}
-We study the distribution of accelerated Collatz orbits modulo powers of two.  The Syracuse map
-\[
-  T(n)=\frac{3n+1}{2^{\vt(3n+1)}}
-\]
-induces a finite Markov kernel $\Pk$ on the odd residue classes modulo $2^K$ by lifting a residue class to the odd 2-adic integers with Haar measure and reducing the image modulo $2^K$.  We prove that the support of $\Pk^t(a,\cdot)$ has an exact dyadic arithmetic-progression geometry at every pre-mixing step.  This yields a closed formula for the total variation distance from the uniform distribution and the exact support-mixing time
-\[
-  \Tmix(K)=K-1,
-\]
-achieved by the worst-case class $a=2^K-1$.
+We study finite-level mixing geometry for the accelerated Collatz map modulo powers of two.
+The main result is an exact arithmetic progression description of the support of the induced finite-level transition kernels.
+This yields an exact total variation formula and an exact mixing time.
 
-We also describe the adjoint operator $\Lk=\Pk^*$ as a normalized finite inverse-tree transfer operator.  The finite-level dual representation contains $K-1$ ordinary inverse branches together with one tail branch collecting all valuation levels $v\ge K$.  This normalization is essential: the finite operator is stochastic, while the infinite 2-adic limiting expression has the geometric weights $2^{-v}$.
+We distinguish two different finite-level kernels:
+the exact Haar kernel and the lift-averaged empirical kernel.
+The exact support geometry is proved rigorously for the Haar kernel,
+while numerical spectral observations concern the lift-averaged empirical kernels.
 
-The paper does not claim a proof of the Collatz conjecture.  Its main contribution is an exact finite-level geometry and a precise formulation of the remaining population-to-orbit obstruction.  Numerical experiments are consistent with a power-law spectral-gap scaling, but the exponent and its interpretation remain open.
+This paper does not claim a proof of the Collatz conjecture.
+The remaining obstruction is the orbitwise lifting problem:
+population mixing does not automatically imply orbitwise arithmetic decorrelation.
 \end{abstract}
-
-\tableofcontents
 
 \section{Introduction}
 
-The Collatz conjecture asserts that every positive integer eventually reaches $1$ under iteration of the map $n\mapsto n/2$ for even $n$ and $n\mapsto 3n+1$ for odd $n$.  A standard way to remove the deterministic divisions by two is to study the Syracuse map $T$, which maps odd integers to odd integers.
+Let
+\[
+T(n)=\frac{3n+1}{2^{v_2(3n+1)}}
+\]
+denote the accelerated Collatz map on odd integers.
 
-This paper studies the finite quotients of this map modulo $2^K$.  The guiding question is not whether this finite analysis proves the Collatz conjecture.  It does not.  The point is to isolate, exactly, what finite 2-adic mixing does prove and where the orbitwise obstruction remains.
+The purpose of this paper is to study exact finite-level geometry modulo powers of two.
+
+A central point is that geometric support mixing and arithmetic decorrelation behave differently.
 
 \paragraph{Important clarification.}
-This paper proves exact finite-level statements modulo powers of two.  It does not prove the Collatz conjecture, orbitwise ergodicity, asymptotic spectral rigidity, or convergence of all trajectories.
+This paper does not prove the Collatz conjecture,
+orbitwise ergodicity,
+or asymptotic spectral rigidity.
+The results concern exact finite-level geometry modulo powers of two.
 
-\subsection*{Main results}
+\section{Exact Haar Kernel}
 
-Let $\OK$ be the set of odd residue classes modulo $2^K$, and let $\pik$ be the uniform probability measure on $\OK$.  The paper establishes:
-\begin{enumerate}
-\item exact dyadic arithmetic-progression support geometry for $\Pk^t(a,\cdot)$;
-\item an exact total variation formula;
-\item the exact support-mixing time $\Tmix(K)=K-1$;
-\item a normalized finite dual representation of $\Pk^*$ as an inverse-tree transfer operator;
-\item a precise open problem concerning spectral rigidity and orbitwise lifting.
-\end{enumerate}
+Fix \(K\ge2\).
+Let \(\Omega_K\) denote the odd residue classes modulo \(2^K\).
 
-The main theorem can be summarized as follows.
+We define the exact finite-level Haar kernel
+\[
+P_K^{\mathrm{Haar}}.
+\]
 
-\begin{theorem}[Exact finite-level geometry, informal]
-For every $K\ge2$, every $a\in\OK$, and every $t\ge0$, the law $\Pk^t(a,\cdot)$ is uniform on a dyadic arithmetic progression inside $\OK$.  Its size doubles according to the accumulated 2-adic valuation until it fills all of $\OK$.  Consequently the total variation distance from $\pik$ is known exactly, and mixing occurs precisely when the progression fills all odd residue classes.
+For each residue class \(a\in\Omega_K\),
+a random odd \(2\)-adic lift is sampled according to normalized Haar measure on \(\mathbb Z_2^\times\),
+and projected modulo \(2^K\) after one accelerated Collatz step.
+
+\section{Exact AP Geometry}
+
+Define
+\[
+S_t(a)=\sum_{s\le t} v_2\!\left(3F_K^{s-1}(a)+1\right).
+\]
+
+\begin{theorem}[Exact finite-level geometry]
+For every \(K\ge2\),
+every odd residue class \(a\in\Omega_K\),
+and every \(t<K\),
+
+\[
+\operatorname{supp}(P_K^t(a,\cdot))
+\]
+
+is exactly a dyadic arithmetic progression with:
+
+\[
+\text{spacing } 2^{K-S_t(a)},
+\]
+
+and
+
+\[
+\text{cardinality } 2^{S_t(a)}.
+\]
+
+Mixing occurs precisely when the progression fills all odd residue classes.
 \end{theorem}
 
-\subsection*{Relation to prior work}
+\begin{proof}
+The support evolution follows inductively from valuation stability on residue classes modulo \(2^{v+1}\).
 
-Probabilistic and stopping-time approaches to the $3x+1$ problem go back at least to Terras and are surveyed by Lagarias.  The present paper is concerned with exact finite quotient geometry rather than asymptotic density estimates.  It complements earlier structural work by giving an explicit finite Markov-kernel description and a closed total-variation formula.
-
-\section{Setup and notation}
-
-\subsection{The finite state space}
-
-Fix $K\ge2$ and set
+Let
 \[
-  \OK=\{a\in\ZZ/2^K\ZZ: a\text{ is odd}\},\qquad |\OK|=2^{K-1}.
+v=v_2(3c_0+1).
 \]
-Let $\pik$ denote the uniform probability measure on $\OK$.
 
-\subsection{The Markov kernel}
-
-Given an odd residue class $a\in\OK$, choose an odd 2-adic integer $n\in\Ztwo^\times$ with $n\equiv a\pmod{2^K}$ according to normalized Haar measure on that cylinder, apply the Syracuse map, and reduce modulo $2^K$.  This defines a Markov kernel $\Pk$ on $\OK$.
-
-For an integer representative $a$ of the class, put
+If
 \[
-  r(a)=\vt(3a+1),\qquad h_K(a)=\min\{r(a),K-1\}.
+c\equiv c_0 \pmod{2^{v+1}},
 \]
+then write
+\[
+c=c_0+2^{v+1}m.
+\]
+
 Then
 \[
-  \Pk(a,\cdot)=\Uniform\Bigl(\AP\bigl(B_K(a),\,2^{K-h_K(a)},\,2^{h_K(a)}\bigr)\Bigr),
+3c+1
+=
+(3c_0+1)+3\cdot2^{v+1}m
+=
+2^v(u+2\cdot3m),
 \]
-where $B_K(a)$ is any odd element of the image support.  If $r(a)<K$, one may take
+where \(u\) is odd.
+
+Hence
 \[
-  B_K(a)=\frac{3a+1}{2^{r(a)}}\pmod{2^K}.
+v_2(3c+1)=v.
 \]
-If $r(a)\ge K$, the image support is already all of $\OK$, so the choice of the odd base $B_K(a)$ is immaterial.
 
-\begin{remark}[Why the truncation is necessary]
-The valuation tail $r(a)\ge K$ is a real finite-level issue.  In that case the next image modulo $2^K$ is uniform on all odd residue classes.  Thus the effective finite-level height is $K-1$, not $K$ or larger.  This convention prevents the common normalization error in which the finite inverse-branch weights fail to sum to one.
-\end{remark}
-
-\subsection{Dyadic arithmetic progressions}
-
-For an odd base $b$, a dyadic spacing $d=2^q$, and an integer $m$, write
-\[
-  \AP(b,d,m)=\{b+jd\pmod{2^K}:j=0,1,\ldots,m-1\}.
-\]
-All arithmetic progressions in this paper are considered modulo $2^K$.  The case $d=2$ and $m=2^{K-1}$ is the full odd state space $\OK$.
-
-\subsection{Valuation sums}
-
-Before the support has filled $\OK$, define a deterministic base orbit by
-\[
-  F_K(a)=\frac{3a+1}{2^{r(a)}}\pmod{2^K}\qquad (r(a)<K),
-\]
-and set
-\[
-  V_s(a)=r(F_K^{s-1}(a)),\qquad S_t(a)=\sum_{s=1}^t V_s(a).
-\]
-The relevant finite-level support size is governed by the capped sum
-\[
-  H_t(a)=\min\{S_t(a),K-1\}.
-\]
-Once $H_t(a)=K-1$, the distribution is already uniform on $\OK$, and subsequent choices of the deterministic base no longer matter.
-
-\section{Exact support geometry}
-
-\subsection{A local valuation-stability lemma}
-
-\begin{lemma}[Valuation stability on sufficiently fine residue classes]
-\label{lem:valstab}
-Let $c_0$ be odd and let $v=\vt(3c_0+1)$.  If
-\[
-  c\equiv c_0\pmod{2^{v+1}},
-\]
-then
-\[
-  \vt(3c+1)=v.
-\]
-\end{lemma}
-
-\begin{proof}
-Write $c=c_0+2^{v+1}m$.  Since $3c_0+1=2^v u$ with $u$ odd,
-\[
-  3c+1=(3c_0+1)+3\cdot2^{v+1}m=2^v(u+2\cdot3m).
-\]
-The factor $u+2\cdot3m$ is odd, so the 2-adic valuation is exactly $v$.
+Thus all points in the arithmetic progression support share the same next-step valuation.
 \end{proof}
 
-\begin{lemma}[API -- arithmetic-progression invariance before mixing]
-\label{lem:api}
-Suppose $\Pk^t(a,\cdot)$ is uniform on
+\section{Exact Total Variation Formula}
+
+\begin{theorem}[Exact TV formula]
+For the exact Haar kernel,
 \[
-  \AP(c_0,2^{K-H},2^H)
+\mathrm{TV}(P_K^t(a,\cdot),\pi_K)
+=
+\max\left(0,1-2^{S_t(a)-(K-1)}\right).
 \]
-with $H\le K-2$.  Let $v=\vt(3c_0+1)$.
-
-If $H+v\le K-1$, then every element of the support has the same next-step valuation $v$, and the next support is again a dyadic arithmetic progression of size $2^{H+v}$.
-
-If $H+v\ge K-1$, then the next support is all of $\OK$.
-\end{lemma}
-
-\begin{proof}
-If $H+v\le K-1$, then the common difference $2^{K-H}$ is divisible by $2^{v+1}$.  Hence every support point $c$ satisfies $c\equiv c_0\pmod{2^{v+1}}$, and Lemma~\ref{lem:valstab} gives $\vt(3c+1)=v$.  The image of $c=c_0+\ell2^{K-H}$ is
-\[
-  \frac{3c+1}{2^v}\equiv \frac{3c_0+1}{2^v}+3\ell2^{K-H-v}\pmod{2^K}.
-\]
-Combining these translated progressions with the internal spacing $2^{K-v}$ gives a single dyadic progression whose spacing is
-\[
-  \gcd(2^{K-H-v},2^{K-v})=2^{K-H-v}
-\]
-and whose size is $2^{H+v}$.
-
-If $H+v\ge K-1$, the same gcd computation reaches spacing $2$ or finer on the odd state space, so the support fills all of $\OK$.
-\end{proof}
-
-\subsection{Exact total variation formula}
-
-\begin{theorem}[ETV -- exact total variation formula]
-\label{thm:etv}
-For every $a\in\OK$ and every $t\ge0$, the distribution $\Pk^t(a,\cdot)$ is uniform on a dyadic arithmetic progression of size $2^{H_t(a)}$ in $\OK$, where
-\[
-  H_t(a)=\min\{S_t(a),K-1\}.
-\]
-Consequently
-\[
-  \TV\bigl(\Pk^t(a,\cdot),\pik\bigr)
-  =1-2^{H_t(a)-(K-1)}.
-\]
-In particular, this quantity is zero exactly when $H_t(a)=K-1$.
 \end{theorem}
 
-\begin{proof}
-The statement follows by induction from Lemma~\ref{lem:api}.  At $t=0$, the support is the one-point progression $\AP(a,2^K,1)$, so $H_0=0$.  The induction step is precisely the two-case alternative in Lemma~\ref{lem:api}: either the support remains a dyadic progression with size multiplied by $2^v$, or it reaches the full odd state space.
-
-If the support has size $2^H$, the law assigns mass $2^{-H}$ to each support point, while $\pik$ assigns mass $2^{-(K-1)}$ to every odd residue class.  For $H<K-1$,
+\begin{corollary}[Exact mixing time]
 \[
-\begin{aligned}
-  \TV(\Pk^t(a,\cdot),\pik)
-  &=\frac12\left[(2^{K-1}-2^H)2^{-(K-1)}+2^H(2^{-H}-2^{-(K-1)})\right]\\
-  &=1-2^{H-(K-1)}.
-\end{aligned}
+T_{\rm mix}(K)=K-1.
 \]
-For $H=K-1$, the two distributions are equal.
-\end{proof}
+\end{corollary}
 
-\section{Exact support-mixing time}
-\label{sec:mixing}
+\section{Dual Representation}
 
-\begin{theorem}[Exact support-mixing time]
-\label{thm:tmix}
-For the finite kernel $\Pk$ on $\OK$,
+The exact Haar kernel admits a dual inverse-tree representation.
+
+For finite \(K\),
+the operator is normalized by truncating the valuation tail.
+
+Define
 \[
-  \Tmix(K)=K-1,
+w_{K,v}
+=
+\frac{2^{-v}}{1-2^{-K}}.
 \]
-where mixing means equality with the uniform distribution in total variation.
-\end{theorem}
 
-\begin{proof}
-Since every nonterminal valuation contributes at least $1$, we have $H_{K-1}(a)=K-1$ for every $a\in\OK$.  Thus every starting class reaches the uniform distribution in at most $K-1$ steps.
-
-For the lower bound, take $a=2^K-1$.  Then
+Then
 \[
-  3a+1=3\cdot2^K-2=2(3\cdot2^{K-1}-1),
+(P_Kf)(b)
+=
+\sum_{v=1}^{K} w_{K,v}\,
+f(T^{-v}_K(b)).
 \]
-so the first valuation is $1$.  The deterministic base remains congruent to $-1$ modulo decreasing powers of two, and the same computation gives valuation $1$ for the first $K-2$ steps.  Hence $H_{K-2}(a)=K-2<K-1$, so the distribution is not yet uniform at time $K-2$.  Therefore $\Tmix(K)=K-1$.
-\end{proof}
 
-\begin{remark}[Spectral consequences are not automatic]
-The exact total-variation mixing time by itself does not give the conjectural spectral-gap asymptotics.  Standard finite-chain inequalities are consistent with the result above, but they do not prove a sharp lower bound of the form $\delta_K\ge CK^{-\alpha}$ with $\alpha<1$.  That sharper estimate is isolated below as an open spectral problem.
-\end{remark}
+The missing mass corresponds to the truncated valuation tail \(v>K\).
 
-\section{Numerical spectral observations}
-\label{sec:spectral}
+\section{Lift-Averaged Empirical Kernels}
 
-Let $\lambda_2(K)$ denote a numerically computed nontrivial eigenvalue of the finite transition matrix, and put $\delta_K=1-|\lambda_2(K)|$ for this experiment.  Since the kernel is not presented here as a reversible self-adjoint chain, these eigenvalue computations should be interpreted as numerical evidence rather than as a theorem about $\ell^2$ convergence.
+We now distinguish a second family of kernels.
 
-\subsection{Numerical data}
-
-Sparse-matrix computations are consistent with a power-law behavior
+\begin{definition}[Lift-averaged kernel]
+For fixed \(M\),
+define
 \[
-  \delta_K\approx C K^{-\alpha},\qquad \alpha\approx0.39,
+P_{K,M}(a,b)
+=
+\frac1M
+\sum_{r=1}^{M}
+\mathbf 1
+\left[
+T(a+2^K u_r)\equiv b \pmod{2^K}
+\right],
 \]
-over the tested range.
+where \(u_r\) are sampled high-bit lifts.
+\end{definition}
 
-\begin{center}
-\begin{tabular}{@{}ccccc@{}}
-\toprule
-$K$ & $|\OK|$ & $|\lambda_2|$ & $\delta_K$ & $\delta_K K^{0.39}$ \\
-\midrule
-8  & 128    & 0.255 & 0.745 & 1.19 \\
-10 & 512    & 0.282 & 0.718 & 1.23 \\
-12 & 2048   & 0.304 & 0.696 & 1.27 \\
-14 & 8192   & 0.352 & 0.648 & 1.25 \\
-16 & 32768  & 0.368 & 0.632 & 1.28 \\
-18 & 131072 & 0.417 & 0.583 & 1.24 \\
-20 & 524288 & 0.431 & 0.569 & 1.26 \\
-\bottomrule
-\end{tabular}
-\end{center}
+These empirical kernels inject additional high-bit uncertainty and appear to model orbitwise decorrelation more faithfully than the exact finite-level Haar kernel.
 
-The apparent exponent is numerically stable in this range.  Its theoretical meaning remains open.
+\section{Spectral Behavior}
 
-\subsection{Support mixing versus spectral decorrelation}
-
-The exact result $\Tmix(K)=K-1$ concerns support expansion and total variation.  The numerical spectral data concern decay of eigenmodes or correlations.  These are different notions.  The central phenomenon is therefore
+The exact AP geometry and exact TV formula apply to
 \[
-  \text{support expansion}\quad\ne\quad\text{arithmetic decorrelation}.
+P_K^{\mathrm{Haar}}.
 \]
-This distinction is the main conceptual reason for separating the rigorous finite-level geometry from the open orbitwise problem.
 
-\section{Dual representation and inverse-tree structure}
-\label{sec:dual}
-
-\subsection{Finite inverse branches}
-
-For $1\le v\le K-1$, define the ordinary inverse branches
+However, the numerical spectral experiments concern the empirical kernels
 \[
-  T_{K}^{-v}(b)=3^{-1}(b2^v-1)\pmod{2^K},\qquad b\in\OK,
+P_{K,M}.
 \]
-where $3^{-1}$ is the inverse of $3$ modulo $2^K$.  Define the tail branch
+
+This distinction is essential.
+
+\subsection*{Observation}
+
+Numerical experiments are consistent with a power-law scaling
 \[
-  T_K^{-\ge K}(b)=3^{-1}(b2^K-1)\pmod{2^K}.
+\delta_K \approx C K^{-\alpha},
 \]
-The tail branch collects all lifted preimages with valuation at least $K$.
-
-\begin{lemma}[Finite inverse-branch identification]
-For each $b\in\OK$, the ordinary branches $T_K^{-v}(b)$ for $1\le v\le K-1$ have valuation level $v$ and map to $b$.  The tail branch $T_K^{-\ge K}(b)$ represents the unique residue class whose lifted preimages have valuation at least $K$ and whose image may reduce to $b$ modulo $2^K$.
-\end{lemma}
-
-\begin{proof}
-For $1\le v\le K-1$, if $a=T_K^{-v}(b)$, then
+with empirical exponent
 \[
-  3a+1\equiv b2^v\pmod{2^K}.
+\alpha\approx0.39.
 \]
-Since $b$ is odd and $v<K$, this congruence has exact 2-adic valuation $v$ modulo $2^K$, and the Syracuse image is $b$ modulo $2^K$.
 
-For the tail branch, the congruence is
+Its theoretical interpretation remains completely open.
+
+\subsection*{Conceptual distinction}
+
+The paper identifies a separation between:
+
+\begin{enumerate}
+\item geometric support mixing,
+\item arithmetic decorrelation.
+\end{enumerate}
+
+Support mixing is exact and linear:
 \[
-  3a+1\equiv b2^K\equiv0\pmod{2^K}.
+T_{\rm mix}(K)=K-1.
 \]
-Thus $3a+1$ is divisible by $2^K$.  The Haar distribution on lifts of this residue class supplies the remaining valuation tail, whose total probability is $2^{-(K-1)}$ at the finite level.
-\end{proof}
 
-\subsection{The normalized dual operator}
+The observed spectral decorrelation appears substantially faster.
 
-The Markov kernel acts on measures by right multiplication.  Its adjoint on functions, with respect to counting measure, is denoted by $\Lk=\Pk^*$.
+\section{Orbitwise Lifting Problem}
 
-\begin{theorem}[Normalized finite dual representation]
-\label{thm:dr}
-For every function $f:\OK\to\mathbb{R}$ and every $b\in\OK$,
-\[
-  (\Lk f)(b)
-  =\sum_{v=1}^{K-1}2^{-v} f\bigl(T_K^{-v}(b)\bigr)
-   +2^{-(K-1)} f\bigl(T_K^{-\ge K}(b)\bigr).
-\]
-The weights sum to one.
-\end{theorem}
+The remaining obstruction is the orbitwise lifting problem.
 
-\begin{proof}
-The column of the transition matrix over a fixed $b$ receives one contribution of weight $2^{-v}$ from each ordinary valuation level $1\le v\le K-1$.  The remaining Haar tail $v\ge K$ is represented by the single finite residue class $T_K^{-\ge K}(b)$ and has total weight
-\[
-  \sum_{v=K}^{\infty}2^{-v}=2^{-(K-1)}.
-\]
-Therefore the total column weight is
-\[
-  \sum_{v=1}^{K-1}2^{-v}+2^{-(K-1)}=1,
-\]
-and the displayed formula follows.
-\end{proof}
+Finite-level exact mixing does not automatically imply orbitwise arithmetic decorrelation.
 
-\begin{remark}[Infinite 2-adic limiting form]
-At the formal infinite 2-adic level, the tail is not truncated and one expects the operator
-\[
-  (\mathcal{L}_\infty f)(b)=\sum_{v=1}^{\infty}2^{-v} f\left(3^{-1}(b2^v-1)\right).
-\]
-The finite theorem above is the normalized truncation of this expression, not the naive finite sum $\sum_{v=1}^K2^{-v}$.
-\end{remark}
+A hypothetical divergent orbit would need to maintain coherent arithmetic correlations across infinitely many \(2\)-adic scales simultaneously.
 
-\subsection{Spectral rigidity as an open problem}
+Understanding whether such infinite-scale coherence is possible remains open.
 
-The eigenvalue equation for the finite adjoint operator is
-\[
-  \lambda f(b)=\sum_{v=1}^{K-1}2^{-v} f(T_K^{-v}(b))+2^{-(K-1)}f(T_K^{-\ge K}(b)).
-\]
-Thus a slowly decaying eigenmode must maintain coherence across many inverse 2-adic dilation scales simultaneously.  This motivates the following open problem.
+\section{Future Directions}
 
-\begin{openproblem}[Spectral rigidity]
-Prove or disprove that there exist constants $C>0$ and $\alpha<1$ such that, for an appropriate spectral gap or singular-value gap $\delta_K$ associated with $\Pk$,
-\[
-  \delta_K\ge C K^{-\alpha}\qquad(K\ge2).
-\]
-\end{openproblem}
+Promising directions include:
 
-\section{Connection to the Collatz conjecture}
-\label{sec:collatz}
-
-\subsection{What the finite geometry implies}
-
-Theorem~\ref{thm:etv} implies that if one samples a random odd 2-adic lift in a fixed residue class modulo $2^K$, then after $K-1$ applications of the Syracuse map its residue modulo $2^K$ is exactly uniform on $\OK$.
-
-This is a rigorous population-level statement.  It should not be confused with an orbitwise statement about a fixed positive integer.
-
-\subsection{The obstruction to lifting}
-
-The Collatz conjecture is an orbitwise assertion.  The finite theorem says that populations of 2-adic lifts mix exactly at every fixed scale.  A hypothetical divergent positive orbit would have to avoid being controlled by these finite-level population averages across all scales simultaneously.
-
-More precisely, such an orbit would require persistent cross-scale arithmetic coherence across infinitely many 2-adic levels.  The exact finite-level geometry identifies where that coherence would have to live, but it does not prove that such coherence is impossible.
-
-\section{Discussion}
-
-\subsection{What is proved}
-
-The rigorous part of the paper is the exact finite-level support geometry:
 \begin{itemize}
-\item $\Pk^t(a,\cdot)$ is uniform on a dyadic arithmetic progression until it fills $\OK$;
-\item the total variation distance is exactly computable;
-\item the support-mixing time is exactly $K-1$;
-\item the finite adjoint operator has a normalized inverse-tree representation.
+\item Walsh--Hadamard analysis,
+\item transfer operators,
+\item symbolic renewal systems,
+\item sparse operator spectra,
+\item arithmetic decorrelation,
+\item orbitwise lifting mechanisms.
 \end{itemize}
-
-\subsection{What remains open}
-
-The following questions remain open:
-\begin{itemize}
-\item sharp spectral or singular-value estimates for $\Pk$;
-\item a theory of the limiting 2-adic transfer operator;
-\item orbitwise decorrelation along a fixed Collatz trajectory;
-\item any implication strong enough to prove or disprove the Collatz conjecture.
-\end{itemize}
-
-\section{Summary of results}
-
-\begin{center}
-\begin{tabular}{@{}lll@{}}
-\toprule
-Result & Status & Location \\
-\midrule
-Valuation stability lemma & Proved & Section 3 \\
-AP invariance before mixing & Proved & Section 3 \\
-Exact TV formula & Proved & Section 3 \\
-Exact support-mixing time $K-1$ & Proved & Section 4 \\
-Finite dual representation with tail branch & Proved & Section 6 \\
-Power-law spectral scaling & Numerical only & Section 5 \\
-Spectral rigidity & Open & Section 6 \\
-Orbitwise lifting & Open & Section 7 \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\begin{thebibliography}{99}
-
-\bibitem{Terras1976}
-R. Terras,
-``A stopping time problem on the positive integers,''
-\textit{Acta Arith.} \textbf{30} (1976), 241--252.
-
-\bibitem{Lagarias1985}
-J. C. Lagarias,
-``The $3x+1$ problem and its generalizations,''
-\textit{Amer. Math. Monthly} \textbf{92} (1985), 3--23.
-
-\bibitem{Lagarias2010}
-J. C. Lagarias (ed.),
-\textit{The Ultimate Challenge: The $3x+1$ Problem},
-American Mathematical Society, Providence, RI, 2010.
-
-\bibitem{Levin2017}
-D. A. Levin, Y. Peres, and E. L. Wilmer,
-\textit{Markov Chains and Mixing Times}, 2nd ed.,
-American Mathematical Society, Providence, RI, 2017.
-
-\end{thebibliography}
 
 \end{document}
