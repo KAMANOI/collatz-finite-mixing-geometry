@@ -1,47 +1,60 @@
-
 # Exact Finite-Level Mixing Geometry in Accelerated Collatz Dynamics
 
-This repository studies exact finite-level mixing geometry modulo powers of two for the accelerated Collatz map.
+**Hiroki Kamanoi**  
+Draft — May 2026
 
-## Main Contributions
+Paper B in a series on Collatz dynamics through finite Markov chain theory.
 
-- Exact arithmetic progression support geometry
-- Exact total variation formula
-- Exact mixing time:
+## Overview
 
-  T_mix(K)=K-1
+This paper establishes the exact finite-level mixing geometry for the accelerated Collatz map modulo $2^K$.
 
-- Dual inverse-tree representation
-- Distinction between:
-  - exact Haar kernels
-  - lift-averaged empirical kernels
+The central result is an exact arithmetic progression support geometry and an exact total variation formula for the Haar kernel. The paper isolates a fundamental separation between population-level geometric mixing and individual orbit arithmetic decorrelation.
+
+## Main Results
+
+The paper establishes:
+
+- exact arithmetic progression support geometry for the Haar kernel $P_K^{\mathrm{Haar}}$;
+- exact total variation formula for $P_K^{\mathrm{Haar}}$;
+- exact mixing time:
+
+  $$T_\mathrm{mix}(K) = K - 1$$
+
+- dual inverse-tree representation;
+- distinction between exact Haar kernels and lift-averaged empirical kernels $P_{K,M}$.
 
 ## Important Clarification
 
-This repository does NOT claim:
+This repository does **not** claim a proof of the Collatz conjecture.
 
-- a proof of the Collatz conjecture,
-- orbitwise ergodicity,
+It also does not claim:
+
+- orbitwise ergodicity or arithmetic decorrelation;
 - asymptotic spectral rigidity.
 
-The main open problem is the orbitwise lifting obstruction:
+The exact finite-level support geometry is proved rigorously for the Haar kernel. Numerical spectral observations concern lift-averaged empirical kernels $P_{K,M}$ and are not theorems.
 
-population mixing ≠ orbitwise arithmetic decorrelation.
+## Logical Structure of the Series
 
-## Main Conceptual Discovery
-
-The paper isolates a separation between:
-
-1. geometric support mixing
-2. arithmetic decorrelation
-
-The exact finite-level support geometry is proved rigorously for the Haar kernel.
-
-Numerical spectral observations concern lift-averaged empirical kernels.
+| Paper | Core result | Status |
+|-------|-------------|--------|
+| A | Exact operator structure and renewal systems | Proved |
+| **B (this paper)** | Exact TV mixing: $T_\mathrm{mix}(K) = K-1$ | Proved |
+| C | One-bit spectral jump $\delta_{K,1} \approx 0.29$; Open Gap Problem | Numerical / Open |
+| D | Simultaneous scale coherence; conditional diverging mixing | Open / Conditional |
 
 ## Files
 
-- collatz_mixing_paper_REVIEW_SAFE.tex
-- collatz_mixing_paper_REVIEW_SAFE.pdf
-- REVIEW_NOTES_REVIEW_SAFE.md
-- LICENSE
+- `collatz_mixing_paper.tex` — LaTeX source
+- `collatz_mixing_paper.pdf` — compiled draft
+- `REVIEW_NOTES.md` — critical notes on the kernel distinction
+
+## Suggested arXiv Categories
+
+Primary: `math.DS`  
+Secondary: `math.NT`, `math.PR`
+
+## License
+
+MIT License
