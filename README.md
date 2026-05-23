@@ -58,3 +58,23 @@ Secondary: `math.NT`, `math.PR`
 ## License
 
 MIT License
+
+
+---
+
+## Related work
+
+This repository is part of a series on Collatz dynamics:
+
+| Repository | Description |
+|------------|-------------|
+| [collatz-renewal-structure](https://github.com/KAMANOI/collatz-renewal-structure) | Paper A: exact renewal structure and operator theory |
+| [collatz-finite-mixing-geometry](https://github.com/KAMANOI/collatz-finite-mixing-geometry) | Finite-level mixing geometry |
+| [collatz-spectral-amplification](https://github.com/KAMANOI/collatz-spectral-amplification) | Paper C: spectral amplification |
+| [collatz-scale-coherence](https://github.com/KAMANOI/collatz-scale-coherence) | Paper D: scale-coherence rigidity |
+
+## Author
+
+Hiroki Kamanoi  
+hirokikamanoi@gmail.com  
+https://github.com/KAMANOI
